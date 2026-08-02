@@ -1,0 +1,22 @@
+{
+  "name": "LULU Pife",
+  "short_name": "LULU Pife",
+  "description": "Jogo de Pife online com chat e lista de amigos.",
+  "start_url": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a1630",
+  "theme_color": "#1e4d94",
+  "icons": [
+    {
+      "src": "assets/icons/icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+} 

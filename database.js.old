@@ -1,0 +1,61 @@
+const sqlite3 = require("sqlite3").verbose();
+
+// cria arquivo do banco (se não existir ele cria automaticamente)
+const db = new sqlite3.Database("./pife.db");
+
+// cria tabela de jogadores
+db.serialize(() => {
+  db.run(`
+    CREATE TABLE IF NOT EXISTS players (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username TEXT UNIQUE,
+      password_hash TEXT,
+      wins INTEGER DEFAULT 0,
+      losses INTEGER DEFAULT 0,
+      matches INTEGER DEFAULT 0
+    )
+  `);
+
+  db.run(`
+    CREATE TABLE IF NOT EXISTS friendships (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      friend_id INTEGER NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(user_id, friend_id)
+    )
+  `);
+
+  db.all(`PRAGMA table_info(players)`, (err, rows) => {
+    if (err) {
+      console.error('Erro ao verificar colunas da tabela players:', err);
+      return;
+    }
+    const hasMatches = rows.some((column) => column.name === 'matches');
+    if (!hasMatches) {
+      db.run(`ALTER TABLE players ADD COLUMN matches INTEGER DEFAULT 0`, (alterErr) => {
+        if (alterErr) {
+          console.error('Erro ao adicionar coluna matches a players:', alterErr);
+        }
+      });
+    }
+    const hasSecurityQuestion = rows.some((column) => column.name === 'security_question');
+    if (!hasSecurityQuestion) {
+      db.run(`ALTER TABLE players ADD COLUMN security_question TEXT`, (alterErr) => {
+        if (alterErr) {
+          console.error('Erro ao adicionar coluna security_question a players:', alterErr);
+        }
+      });
+    }
+    const hasSecurityAnswerHash = rows.some((column) => column.name === 'security_answer_hash');
+    if (!hasSecurityAnswerHash) {
+      db.run(`ALTER TABLE players ADD COLUMN security_answer_hash TEXT`, (alterErr) => {
+        if (alterErr) {
+          console.error('Erro ao adicionar coluna security_answer_hash a players:', alterErr);
+        }
+      });
+    }
+  });
+});
+
+module.exports = db;

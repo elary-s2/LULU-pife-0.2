@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e4d94">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>LULU Pife</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="assets/icons/icon.png">
+  <link rel="icon" type="image/png" href="assets/icons/icon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <h1>LULU Pife</h1>
+  <button id="settingsBtn" class="sound-settings-btn" title="Configurações" aria-label="Configurações">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+      <path d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54A.5.5 0 0 0 13.5 2h-3a.5.5 0 0 0-.5.42l-.36 2.54c-.57.22-1.1.5-1.62.94l-2.39-.96a.5.5 0 0 0-.6.22L2.7 8.48a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94L2.82 15.6a.5.5 0 0 0-.12.64l1.92 3.32c.14.24.44.34.7.22l2.39-.96c.5.44 1.05.8 1.62.94l.36 2.54c.05.28.28.48.56.48h3c.28 0 .51-.2.56-.48l.36-2.54c.57-.22 1.1-.5 1.62-.94l2.39.96c.26.12.56.02.7-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/>
+    </svg>
+  </button>
+  <div id="soundPanel" class="sound-panel hidden" aria-hidden="true">
+    <button id="toggleSoundBtn" class="botao-acao sound-panel-btn" title="Ativar/Desativar efeitos">🔊</button>
+    <div id="musicSelectorContainer" class="music-selector-container">
+      <button id="toggleMusicBtn" class="botao-acao sound-panel-btn" title="Ativar/Desativar música">🎵</button>
+      <button id="musicSelectBtn" class="botao-acao sound-panel-btn" title="Selecionar música">🎵 Música</button>
+      <span id="currentMusicName" class="music-current-name"></span>
+      <div id="musicDropdown" class="music-dropdown hidden" aria-hidden="true">
+        <div id="musicList" class="music-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="authArea" class="auth-area">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h2>Entrar ou Criar Conta</h2>
+        <p>Digite seu usuário e senha para acessar. Caso não tenha conta, crie uma com pergunta de segurança.</p>
+      </div>
+      <div class="auth-row">
+        <input id="authUsername" type="text" placeholder="Nome de usuário" maxlength="32" />
+      </div>
+    <div class="auth-row">
+      <input id="authPassword" type="password" placeholder="Senha" maxlength="64" />
+    </div>
+    <div class="auth-row auth-actions">
+      <button id="authShowRegisterBtn" class="botao-acao pequena">Criar conta</button>
+      <button id="authLoginBtn" class="botao-acao">Entrar</button>
+    </div>
+    <div class="auth-row auth-actions guest-action-row">
+      <button id="guestAccessBtn" class="botao-acao pequena">Jogar como convidado</button>
+    </div>
+    <div id="registerFields" class="hidden">
+      <div class="auth-row">
+        <select id="authSecurityQuestion">
+          <option value="">Escolha uma pergunta de segurança</option>
+          <option value="Qual é o nome do seu primeiro animal de estimação?">Qual é o nome do seu primeiro animal de estimação?</option>
+          <option value="Qual é o nome da sua mãe?">Qual é o nome da sua mãe?</option>
+          <option value="Qual é o nome da sua escola primária?">Qual é o nome da sua escola primária?</option>
+          <option value="Qual era sua comida favorita quando criança?">Qual era sua comida favorita quando criança?</option>
+        </select>
+      </div>
+      <div class="auth-row">
+        <input id="authSecurityAnswer" type="text" placeholder="Resposta da pergunta de segurança" maxlength="64" />
+      </div>
+      <div class="auth-row">
+        <button id="authRegisterBtn" class="botao-acao">Confirmar cadastro</button>
+        <button id="authCancelRegisterBtn" class="botao-acao pequena">Cancelar</button>
+      </div>
+    </div>
+    <div class="auth-row">
+      <button id="forgotPasswordBtn" type="button" class="botao-acao pequena">Esqueci minha senha</button>
+    </div>
+    <div id="forgotPasswordArea" class="hidden">
+      <div class="auth-row">
+        <input id="forgotUsernameInput" type="text" placeholder="Nome de usuário" maxlength="32" />
+      </div>
+      <div class="auth-row">
+        <button id="getSecurityQuestionBtn" type="button" class="botao-acao pequena">Mostrar pergunta</button>
+      </div>
+      <div id="securityQuestionBlock" class="auth-row hidden">
+        <span id="securityQuestionText"></span>
+      </div>
+      <div id="securityAnswerRow" class="auth-row hidden">
+        <input id="securityAnswerInput" type="text" placeholder="Resposta da pergunta" maxlength="64" />
+      </div>
+      <div id="resetPasswordFields" class="hidden">
+        <div class="auth-row">
+          <input id="forgotNewPasswordInput" type="password" placeholder="Nova senha" maxlength="64" />
+        </div>
+        <div class="auth-row">
+          <input id="forgotConfirmPasswordInput" type="password" placeholder="Confirmar nova senha" maxlength="64" />
+        </div>
+        <div class="auth-row">
+          <button id="resetPasswordBtn" type="button" class="botao-acao pequena">Redefinir senha</button>
+        </div>
+      </div>
+      <div id="forgotPasswordMessage" class="status"></div>
+    </div>
+    <div id="authMessage" class="status"></div>
+  </div>
+  </div>
+
+  <div id="joinArea" class="join-area hidden">
+    <div class="join-row logout-row">
+      <span id="playerUsername" class="player-username"></span>
+      <button id="logoutBtn" class="botao-acao pequena">Sair</button>
+    </div>
+    <div class="join-row">
+      <button id="privateMessagesBtn" class="botao-acao pequena private-contact-button" type="button" title="Conversas privadas">
+        💬🔒
+        <span id="privateMessagesBadge" class="message-badge hidden">0</span>
+      </button>
+    </div>
+    <div class="lobby-tabs">
+      <button id="lobbyTabBtn" class="tab-button active" type="button">Jogar</button>
+      <button id="profileTabBtn" class="tab-button" type="button">Perfil</button>
+      <button id="friendsTabBtn" class="tab-button" type="button">👥 Amigos</button>
+    </div>
+    <div id="joinContent">
+      <p>Entre com seu nome e escolha uma mesa para jogar.</p>
+      <input id="playerName" type="text" placeholder="Seu nome" maxlength="16" />
+    <div class="join-row">
+      <label for="mesaSelect">Mesa disponível</label>
+      <select id="mesaSelect"></select>
+      <button id="refreshRoomsBtn" class="botao-acao pequena">Atualizar</button>
+    </div>
+    <div id="onlineRoomControls">
+      <div class="join-row">
+        <button id="createRoomBtn" class="botao-acao">Criar nova mesa</button>
+      </div>
+      <button id="joinBtn" class="botao-acao">Entrar na mesa</button>
+      <div class="bot-separator">· · ·</div>
+    </div>
+    <div class="join-row">
+      <button id="playBotBtn" class="botao-acao">🤖 Jogar com Bot</button>
+    </div>
+    <div class="join-row">
+      <label for="botCountSelect">Bots</label>
+      <select id="botCountSelect">
+        <option value="1">1 bot</option>
+        <option value="2">2 bots</option>
+        <option value="3">3 bots</option>
+        <option value="4">4 bots</option>
+        <option value="5">5 bots</option>
+      </select>
+    </div>
+    <div id="joinMessage" class="status"></div>
+    <div id="connectionStatus" class="status"></div>
+    <div class="brand-signature">by Elary</div>
+  </div>
+  </div>
+
+  <div id="contactsPanel" class="contacts-panel hidden">
+    <div class="contacts-header">
+      <div>
+        <h3>Conversas</h3>
+        <p id="contactsSubtitle">Buscar amigos e conversas.</p>
+      </div>
+    </div>
+    <div class="contacts-search-row">
+      <input id="contactsSearchInput" type="text" placeholder="Buscar amigos ou conversas..." autocomplete="off" />
+    </div>
+    <div id="contactsList" class="contacts-list"></div>
+  </div>
+
+  <div id="privateChatArea" class="ranking-card private-chat-area hidden">
+    <div class="private-chat-header">
+      <div>
+        <h3 id="privateChatTitle">Chat privado</h3>
+        <p id="privateChatSubtitle">Selecione um amigo para iniciar uma conversa.</p>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button id="clearPrivateChatBtn" class="botao-acao pequena" type="button" title="Limpar conversa" style="padding: 6px 8px; font-size: 1rem;">🗑️</button>
+        <button id="closePrivateChatBtn" class="botao-acao pequena" type="button">Fechar</button>
+      </div>
+    </div>
+    <div id="privateChatMessages" class="private-chat-messages"></div>
+    <div class="chat-input-row private-chat-input-row">
+      <input id="privateChatInput" type="text" maxlength="200" placeholder="Digite mensagem privada..." autocomplete="off" />
+      <button id="sendPrivateChatBtn" class="botao-acao pequena private-send-button" type="button">➤</button>
+    </div>
+    <div id="privateChatNotice" class="status"></div>
+  </div>
+
+  <div id="profileArea" class="profile-area hidden">
+    <div class="profile-header">
+      <div>
+        <h2>Meu Perfil</h2>
+        <p id="profileSubtitle">Estatísticas do jogador</p>
+      </div>
+      <button id="refreshProfileBtn" class="botao-acao pequena">Atualizar</button>
+    </div>
+    <div class="profile-grid">
+      <div class="profile-card">
+        <h3>Estatísticas</h3>
+        <div class="profile-stat-row"><span>Nome</span><strong id="profileName">Carregando...</strong></div>
+        <div class="profile-stat-row"><span>Vitórias</span><strong id="profileWins">—</strong></div>
+        <div class="profile-stat-row"><span>Derrotas</span><strong id="profileLosses">—</strong></div>
+        <div class="profile-stat-row"><span>Partidas</span><strong id="profileMatches">—</strong></div>
+        <div class="profile-stat-row"><span>Aproveitamento</span><strong id="profileWinrate">—</strong></div>
+        <div class="password-change-section">
+          <h3>Alterar senha</h3>
+          <div class="profile-stat-row"><span>Senha atual</span><input id="currentPasswordInput" type="password" placeholder="Senha atual"></div>
+          <div class="profile-stat-row"><span>Nova senha</span><input id="newPasswordInput" type="password" placeholder="Nova senha"></div>
+          <div class="profile-stat-row"><span>Confirmar</span><input id="confirmPasswordInput" type="password" placeholder="Confirmar nova senha"></div>
+          <div id="profileSecuritySetup" class="hidden">
+            <div class="profile-stat-row"><span>Pergunta de segurança</span>
+              <select id="profileSecurityQuestion">
+                <option value="">Escolha uma pergunta</option>
+                <option value="Qual é o nome do seu primeiro animal de estimação?">Qual é o nome do seu primeiro animal de estimação?</option>
+                <option value="Qual é o nome da sua mãe?">Qual é o nome da sua mãe?</option>
+                <option value="Qual é o nome da sua escola primária?">Qual é o nome da sua escola primária?</option>
+                <option value="Qual era sua comida favorita quando criança?">Qual era sua comida favorita quando criança?</option>
+              </select>
+            </div>
+            <div class="profile-stat-row"><span>Resposta</span><input id="profileSecurityAnswer" type="text" placeholder="Resposta da pergunta" maxlength="64"></div>
+            <div class="profile-note">Se sua conta ainda não tiver uma pergunta de segurança, você deve configurá-la aqui.</div>
+          </div>
+          <button id="changePasswordBtn" type="button" class="botao-acao pequena">Alterar senha</button>
+          <div id="passwordChangeMessage" class="status"></div>
+        </div>
+      </div>
+      <div class="ranking-card">
+        <div class="ranking-title">
+          <h3>Ranking Global</h3>
+          <span id="rankingStatus">Carregando...</span>
+        </div>
+        <div class="ranking-table-container">
+          <table class="ranking-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Nome</th>
+                <th>Vitórias</th>
+                <th>Derrotas</th>
+                <th>Aproveitamento</th>
+              </tr>
+            </thead>
+            <tbody id="rankingBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="friendsArea" class="profile-area hidden">
+    <div class="profile-header">
+      <div>
+        <h2>Amigos</h2>
+        <p id="friendsSubtitle">Adicione e gerencie sua lista de amigos.</p>
+      </div>
+      <button id="refreshFriendsBtn" class="botao-acao pequena">Atualizar</button>
+    </div>
+    <div class="profile-grid">
+      <div class="profile-card">
+        <h3>Adicionar amigo</h3>
+        <div class="profile-stat-row">
+          <input id="friendUsernameInput" type="text" placeholder="Nome de usuário" maxlength="32" />
+        </div>
+        <button id="addFriendBtn" class="botao-acao">Adicionar</button>
+        <div id="friendActionMessage" class="status"></div>
+      </div>
+      <div class="ranking-card">
+        <h3>Lista de amigos</h3>
+        <div id="friendsList" class="friends-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="roomArea" class="room-area hidden">
+    <div id="lobbyPanel" class="lobby-panel hidden">
+      <div class="panel-card">
+        <div class="panel-header">
+          <h2 id="lobbyRoomName">Nome da mesa</h2>
+          <span class="panel-badge">Lobby</span>
+          <button id="editRoomNameBtn" class="botao-acao pequena hidden" type="button">Editar nome</button>
+        </div>
+        <p id="lobbyStatusMessage" class="panel-text">Aguardando o host iniciar a partida.</p>
+        <div class="panel-stats">
+          <div class="panel-stat">
+            <span>Jogadores</span>
+            <strong id="lobbyPlayerCount">0</strong>
+          </div>
+          <div class="panel-stat">
+            <span>Limite</span>
+            <strong id="lobbyMaxPlayers">0</strong>
+          </div>
+        </div>
+        <div class="player-list-card">
+          <h3>Jogadores na mesa</h3>
+          <ul id="lobbyPlayerList" class="player-list"></ul>
+        </div>
+        <button id="lobbyStartBtn" class="botao-acao grande hidden" type="button">INICIAR PARTIDA</button>
+        <p id="lobbyHelpText" class="panel-note">Somente o host pode iniciar a partida.</p>
+      </div>
+    </div>
+
+    <div id="waitingPanel" class="lobby-panel hidden">
+      <div class="panel-card">
+        <div class="panel-header">
+          <h2 id="waitingRoomName">Nome da mesa</h2>
+          <span class="panel-badge">Sala de espera</span>
+          <button id="editWaitingRoomNameBtn" class="botao-acao pequena hidden" type="button">Editar nome</button>
+        </div>
+        <p id="waitingStatusText" class="panel-text">Partida em andamento</p>
+        <div class="panel-stats">
+          <div class="panel-stat">
+            <span>Aguardando</span>
+            <strong id="waitingCount">0</strong>
+          </div>
+          <div class="panel-stat">
+            <span>Sua posição</span>
+            <strong id="waitingPosition">#0</strong>
+          </div>
+        </div>
+        <div class="player-list-card">
+          <h3>Fila de espera</h3>
+          <ol id="waitingPlayerList" class="player-list"></ol>
+        </div>
+        <p class="panel-note">Você entrará automaticamente na próxima partida quando a atual terminar.</p>
+      </div>
+    </div>
+
+    <div class="room-footer">
+      <button id="roomExitBtn" class="botao-acao">Sair da Mesa</button>
+    </div>
+  </div>
+
+  <div id="sharedRoomControls" class="shared-room-controls hidden">
+    <div id="chatToggleContainer">
+      <button id="chatToggleBtn" class="botao-acao pequena chat-toggle-btn" type="button">💬 Chat</button>
+    </div>
+
+    <div id="chatPreview" class="chat-preview hidden" aria-live="polite"></div>
+
+    <div id="chatPanel" class="chat-panel hidden">
+      <div class="chat-panel-header">
+        <span>Chat da mesa</span>
+        <button id="chatCloseBtn" class="botao-acao pequena" type="button">Fechar</button>
+      </div>
+      <div id="chatMessages" class="chat-messages" aria-live="polite"></div>
+      <div class="chat-input-row">
+        <input id="chatInput" type="text" maxlength="200" placeholder="Digite uma mensagem..." autocomplete="off" />
+        <button id="sendChatBtn" class="botao-acao pequena" type="button">Enviar</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="gameArea" class="jogo hidden">
+    <div id="playerInfoTop" class="player-info-top">
+      <span id="jogadorInfo">Sua mão: 0 cartas</span>
+    </div>
+    <div id="playersArea" class="players-grid"></div>
+
+    <section id="topo">
+      <div class="pilha">
+        <div class="titulo-pilha">Baralho</div>
+        <div id="baralho" class="pilha-cartas" style="cursor: pointer;"></div>
+      </div>
+
+      <div class="pilha">
+        <div class="titulo-pilha">Descarte</div>
+        <div id="descarte" class="pilha-cartas" style="cursor: pointer;"></div>
+      </div>
+    </section>
+
+    <section id="infos">
+      <div id="status" class="status"></div>
+      <button id="resetBtn" class="botao-acao hidden">Reiniciar sala</button>
+    </section>
+
+    <section id="mesa">
+      <div class="meld-actions acima-titulo">
+        <button id="autoDeclararBtn" class="botao-acao">Auto declarar</button>
+        <button id="declararMeldBtn" class="botao-acao">Declarar conjunto</button>
+      </div>
+      <h2>Sua mão</h2>
+      <div id="maoJogador" class="mao"></div>
+    </section>
+
+
+    <section id="melds">
+      <div>
+        <h2>Seus conjuntos</h2>
+        <div id="meldsJogador" class="conjuntos"></div>
+      </div>
+    </section>
+
+    <div class="botoes-finais">
+      <button id="startGameBtn" class="botao-acao hidden">Iniciar jogo</button>
+      <button id="baterBtn" class="botao-acao">Bater</button>
+      <button id="exitRoomBtn" class="botao-acao">Sair da Mesa</button>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/assets/js/Sortable.min.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>
